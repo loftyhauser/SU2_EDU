@@ -39,21 +39,20 @@ filename = options.file
 # Load the csv file with the airfoil coordinate and pressure data (sorted)
 
 data = pd.read_csv(filename)
-data = data.sort('Global_Index')
-data.to_csv(filename, index=False)
-data = mlab.csv2rec(filename, comments='#', skiprows=0, checkrows=0)
+data.columns = data.columns.str.strip().str.replace('"', '', regex=False).str.lower()
+data = data.sort_values(by='global_index')
 
 # Plot the airfoil shape and pressure distribution
 
 fig = plt.figure()
 ax1 = fig.add_subplot(111)
-ax1.plot(data.x_coord[:],data.pressure_coefficient[:],'-b',linewidth = 2.0)
+ax1.plot(data.x_coord,data.pressure_coefficient,'-b',linewidth = 2.0)
 ax1.set_ylim(ax1.get_ylim()[::-1])
 ax1.set_xlabel(r'$x/c$', fontsize=20)
 ax1.set_ylabel(r'$C_p$', fontsize=20)
 
 ax2 = ax1.twinx()
-ax2.plot(data.x_coord[:],data.y_coord[:],'-k',linewidth = 1.5)
+ax2.plot(data.x_coord,data.y_coord,'-k',linewidth = 1.5)
 ax2.axis('equal')
 ax2.axis('off')
 ax2.set_xlim([-0.02,1.02])
